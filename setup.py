@@ -48,6 +48,7 @@ def Main():
     try:
         import setuptools
         METADATA.update(SETUPTOOLS_METADATA)
+        METADATA['packages'] = setuptools.find_packages()
         setuptools.setup(**METADATA)
     except ImportError:
         import distutils.core
