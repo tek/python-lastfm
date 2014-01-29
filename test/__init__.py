@@ -1,9 +1,9 @@
-import test_album
-import test_tag
-import test_event
-import test_artist
-import test_geo
-import test_group
-import test_playlist
-import test_track
-import test_user
+from . import test_album
+from . import test_tag
+from . import test_event
+from . import test_artist
+from . import test_geo
+from . import test_group
+from . import test_playlist
+from . import test_track
+from . import test_user

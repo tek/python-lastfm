@@ -1,4 +1,4 @@
-from urlparse import urlunparse
+from urllib.parse import urlunparse
 import os
 import sys
 if sys.version < '2.6':
@@ -45,8 +45,8 @@ def test_app(environ, start_response):
         #print "key:", key 
         import wsgi_intercept
         wsgi_intercept.remove_wsgi_intercept('ws.audioscrobbler.com', 80)
-        import urllib2
-        filedata = urllib2.urlopen(url).read()
+        import urllib.request, urllib.error, urllib.parse
+        filedata = urllib.request.urlopen(url).read()
         wsgi_intercept.add_wsgi_intercept('ws.audioscrobbler.com', 80, create_wsgi_app)
         open(data_file, "w").write(filedata)
     return [filedata]
@@ -61,5 +61,5 @@ if __name__ == "__main__":
     install_opener()
     import wsgi_intercept
     wsgi_intercept.add_wsgi_intercept('ws.audioscrobbler.com', 80, create_wsgi_app)
-    import urllib2
-    print urllib2.urlopen('http://ws.audioscrobbler.com/2.0/?album=Supersonic&api_key=152a230561e72192b8b0f3e42362c6ff&artist=Oasis&method=album.getInfo').read()
+    import urllib.request, urllib.error, urllib.parse
+    print(urllib.request.urlopen('http://ws.audioscrobbler.com/2.0/?album=Supersonic&api_key=152a230561e72192b8b0f3e42362c6ff&artist=Oasis&method=album.getInfo').read())

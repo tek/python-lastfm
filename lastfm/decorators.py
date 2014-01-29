@@ -43,7 +43,7 @@ def cached_property(func):
     @return:      a property that wraps the getter function of the attribute
     @rtype:       L{property}
     """
-    func_name = func.func_code.co_name
+    func_name = func.__code__.co_name
     attribute_name = "_%s" % func_name
 
     def wrapper(ob):
@@ -116,15 +116,15 @@ def depaginate(func, *args, **kwargs):
     @lazylist
     def generator(lst):
         gen = func(*args, **kwargs)
-        total_pages = gen.next()
+        total_pages = next(gen)
         for e in gen:
             yield e
-        for page in xrange(2, total_pages+1):
+        for page in range(2, total_pages+1):
             new_args = list(args)
             new_args[-1] = page
             new_args = tuple(new_args)
             gen = func(*new_args, **kwargs)
-            if gen.next() is None:
+            if next(gen) is None:
                 continue
             for e in gen:
                 yield e
@@ -174,7 +174,7 @@ def async_callback(func, *args, **kwargs):
             result = None
             try:
                 result = func(*args, **kwargs)
-            except Exception, e:
+            except Exception as e:
                 result = e
             callback(result)
         thread = Thread(target = async_call)

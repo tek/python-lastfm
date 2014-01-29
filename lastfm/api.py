@@ -66,7 +66,7 @@ class Api(object):
         self._secret = secret
         self._session_key = session_key
         self._cache = FileCache()
-        self._urllib = urllib2
+        self._urllib = urllib.request
         self._cache_timeout = Api.DEFAULT_CACHE_TIMEOUT
         self._initialize_request_headers(request_headers)
         self._initialize_user_agent()
@@ -610,7 +610,7 @@ class Api(object):
     @Wormhole.entrance('lfm-api-url')
     def _build_url(self, url, path_elements=None, extra_params=None):
         # Break url into consituent parts
-        (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(url)
+        (scheme, netloc, path, params, query, fragment) = urllib.parse.urlparse(url)
         path = path.replace(' ', '+')
 
         # Add any additional path elements to the path
@@ -631,7 +631,7 @@ class Api(object):
                 query = extra_query
 
         # Return the rebuilt URL
-        return urlparse.urlunparse((scheme, netloc, path, params, query, fragment))
+        return urllib.parse.urlunparse((scheme, netloc, path, params, query, fragment))
 
     def _initialize_request_headers(self, request_headers):
         if request_headers:
@@ -648,22 +648,22 @@ class Api(object):
         opener = self._urllib.build_opener()
         if self._urllib._opener is not None:
             opener = self._urllib.build_opener(*self._urllib._opener.handlers)
-        opener.addheaders = self._request_headers.items()
+        opener.addheaders = list(self._request_headers.items())
         return opener
 
     def _encode(self, s):
         if self._input_encoding:
-            return unicode(s, self._input_encoding).encode('utf-8')
+            return str(s, self._input_encoding).encode('utf-8')
         else:
-            return unicode(s).encode('utf-8')
+            return str(s).encode('utf-8')
 
     def _encode_parameters(self, parameters):
         if parameters is None:
             return None
         else:
-            keys = parameters.keys()
+            keys = list(parameters.keys())
             keys.sort()
-            return urllib.urlencode([(k, self._encode(parameters[k])) for k in keys if parameters[k] is not None])
+            return urllib.parse.urlencode([(k, self._encode(parameters[k])) for k in keys if parameters[k] is not None])
 
     def _read_url_data(self, opener, url, data = None):
         with _lock:
@@ -687,7 +687,7 @@ class Api(object):
         if no_cache or not self._cache or not self._cache_timeout:
             try:
                 url_data = self._read_url_data(opener, url)
-            except urllib2.HTTPError, e:
+            except urllib.error.HTTPError as e:
                 url_data = e.read()
         else:
             # Unique keys are a combination of the url and the username
@@ -700,7 +700,7 @@ class Api(object):
             if not last_cached or time.time() >= last_cached + self._cache_timeout:
                 try:
                     url_data = self._read_url_data(opener, url)
-                except urllib2.HTTPError, e:
+                except urllib.error.HTTPError as e:
                     url_data = e.read()
                 self._cache.Set(key, url_data)
             else:
@@ -755,9 +755,9 @@ class Api(object):
 
     def _get_api_sig(self, params):
         if self.secret is not None:
-            keys = params.keys()[:]
+            keys = list(params.keys())[:]
             keys.sort()
-            sig = unicode()
+            sig = str()
             for name in keys:
                 if name == 'api_sig': continue
                 sig += ("%s%s" % (name, params[name]))
@@ -771,12 +771,12 @@ class Api(object):
         data = None
         try:
             data = ElementTree.XML(xml)
-        except SyntaxError, e:
+        except SyntaxError as e:
             raise OperationFailedError("Error in parsing XML: %s" % e)
         if data.get('status') != "ok":
             code = int(data.find("error").get('code'))
             message = data.findtext('error')
-            if code in error_map.keys():
+            if code in list(error_map.keys()):
                 raise error_map[code](message, code)
             else:
                 raise LastfmError(message, code)
@@ -788,9 +788,9 @@ class Api(object):
 from datetime import datetime
 import sys
 import time
-import urllib
-import urllib2
-import urlparse
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 
 from lastfm.album import Album
 from lastfm.artist import Artist

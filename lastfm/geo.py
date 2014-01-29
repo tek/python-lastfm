@@ -591,7 +591,7 @@ class Country(LastfmBase):
     @staticmethod
     def _get_all(seed_country):
         return (seed_country, ['name'],
-            lambda api, hsh: (Country(api, name = c) for c in Country.ISO_CODES.itervalues()))
+            lambda api, hsh: (Country(api, name = c) for c in Country.ISO_CODES.values()))
         
     @staticmethod
     def _hash_func(*args, **kwds):

@@ -326,9 +326,9 @@ class WeeklyTagChart(TagChart, WeeklyChart):
             artist_pp = artist.stats.playcount/float(wac.stats.playcount)
                 
         tag_weights_sum = sum(tag_weights.values())
-        tag_weights = tag_weights.items()
+        tag_weights = list(tag_weights.items())
         tag_weights.sort(key=lambda x:x[1], reverse=True)
-        for i in xrange(len(tag_weights)):
+        for i in range(len(tag_weights)):
             tag, weight = tag_weights[i]
             tag_weights[i] = (tag, weight, i+1)
         
@@ -366,7 +366,7 @@ class RollingChart(Chart):
         if start is not None and end is not None:
             mcl = MonthlyChart.get_chart_list(subject)
             is_valid = False
-            for i in xrange(len(mcl)-(duration-1)):
+            for i in range(len(mcl)-(duration-1)):
                 if mcl[i].start == start and mcl[i+(duration-1)].end == end:
                     is_valid = True
             if not is_valid:
@@ -394,7 +394,7 @@ class RollingChart(Chart):
             except LastfmError as ex:
                 logging.log_silenced_exceptions(ex)
         stats_dict = period_wacl[0].__dict__["_%ss" % chart_type][0].stats.__dict__
-        count_attribute = [k for k in stats_dict.keys()
+        count_attribute = [k for k in list(stats_dict.keys())
                            if stats_dict[k] is not None and k not in ['_rank', '_subject']][0]
         items = {}
         for wac in period_wacl:
@@ -408,7 +408,7 @@ class RollingChart(Chart):
                 else:
                     items[key] = item
                     items[key].stats.__dict__[count_attribute] = count
-        items = items.values()
+        items = list(items.values())
         items = [a for a in items if a.stats.__dict__[count_attribute] >= 1]
         items.sort(key = lambda a: a.stats.__dict__[count_attribute], reverse=True)
         for i,item in enumerate(items):
@@ -481,7 +481,7 @@ class MonthlyChart(RollingChart):
                     start=months[i],
                     end=months[i+1]
                 )
-               for i in xrange(len(months)-1)]
+               for i in range(len(months)-1)]
         
 class MonthlyAlbumChart(RollingAlbumChart, MonthlyChart):
     """A class for representing the monthly album charts"""

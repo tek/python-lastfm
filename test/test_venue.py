@@ -9,7 +9,7 @@ import sys, os
 
 from wsgi_intercept.urllib2_intercept import install_opener
 import wsgi_intercept
-from wsgi_test_app import create_wsgi_app
+from .wsgi_test_app import create_wsgi_app
 
 install_opener()
 wsgi_intercept.add_wsgi_intercept('ws.audioscrobbler.com', 80, create_wsgi_app)
@@ -51,7 +51,7 @@ data = {
     'name': 'Tokyo Dome',
     'url': 'http://www.last.fm/venue/8780357'
 }
-for k,v in data.iteritems():
+for k,v in data.items():
     def testFunc(self):
         self.assertEqual(getattr(self.venue, k), v)
     setattr(TestVenue, "testVenue%s" % k.replace('_', ' ').title().replace(' ', ''), testFunc)

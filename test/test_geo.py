@@ -9,7 +9,7 @@ import sys, os
 
 from wsgi_intercept.urllib2_intercept import install_opener
 import wsgi_intercept
-from wsgi_test_app import create_wsgi_app
+from .wsgi_test_app import create_wsgi_app
 
 install_opener()
 wsgi_intercept.add_wsgi_intercept('ws.audioscrobbler.com', 80, create_wsgi_app)
@@ -62,9 +62,9 @@ class TestGeo(unittest.TestCase):
         self.assertEqual(self.country.name.lower(), "japan")
         
     def testCountryTopArtists(self):
-        artists = ['Perfume', 'Radiohead', 'The Beatles', u'\u304f\u308b\u308a',
+        artists = ['Perfume', 'Radiohead', 'The Beatles', '\u304f\u308b\u308a',
                    'Coldplay', 'Oasis', 'Capsule', 'Mr.Children', 'U2', 
-                   u'\u5b87\u591a\u7530\u30d2\u30ab\u30eb']
+                   '\u5b87\u591a\u7530\u30d2\u30ab\u30eb']
         self.assertEqual([a.name for a in self.country.top_artists[:10]], artists)
         
     def testCountryTopArtist(self):
@@ -72,15 +72,15 @@ class TestGeo(unittest.TestCase):
         
     def testCountryTopTracks(self):
         tracks = [('Dream Fighter', 'Perfume'),
-                  (u'\u5730\u7344\u5148\u751f', u'\u76f8\u5bfe\u6027\u7406\u8ad6'),
-                  (u'\u30dd\u30ea\u30ea\u30ba\u30e0', 'Perfume'),
-                  (u'\u30c1\u30e7\u30b3\u30ec\u30a4\u30c8\u30fb\u30c7\u30a3\u30b9\u30b3', 'Perfume'),
+                  ('\u5730\u7344\u5148\u751f', '\u76f8\u5bfe\u6027\u7406\u8ad6'),
+                  ('\u30dd\u30ea\u30ea\u30ba\u30e0', 'Perfume'),
+                  ('\u30c1\u30e7\u30b3\u30ec\u30a4\u30c8\u30fb\u30c7\u30a3\u30b9\u30b3', 'Perfume'),
                   ('Baby cruising Love', 'Perfume'),
                   ('Viva la Vida', 'Coldplay'),
-                  (u'\u30c6\u30ec\u6771', u'\u76f8\u5bfe\u6027\u7406\u8ad6'),
-                  (u'\u30b7\u30fc\u30af\u30ec\u30c3\u30c8\u30b7\u30fc\u30af\u30ec\u30c3\u30c8', 'Perfume'),
-                  (u'\u56db\u89d2\u9769\u547d', u'\u76f8\u5bfe\u6027\u7406\u8ad6'),
-                  (u'\u3075\u3057\u304e\u30c7\u30ab\u30eb\u30c8', u'\u76f8\u5bfe\u6027\u7406\u8ad6')]
+                  ('\u30c6\u30ec\u6771', '\u76f8\u5bfe\u6027\u7406\u8ad6'),
+                  ('\u30b7\u30fc\u30af\u30ec\u30c3\u30c8\u30b7\u30fc\u30af\u30ec\u30c3\u30c8', 'Perfume'),
+                  ('\u56db\u89d2\u9769\u547d', '\u76f8\u5bfe\u6027\u7406\u8ad6'),
+                  ('\u3075\u3057\u304e\u30c7\u30ab\u30eb\u30c8', '\u76f8\u5bfe\u6027\u7406\u8ad6')]
         self.assertEqual(
             [(track.name, track.artist.name) for track in self.country.top_tracks[:10]],
             tracks)
@@ -103,7 +103,7 @@ data = {
     'postal_code': '112-8562'
 }
 
-for k,v in data.iteritems():
+for k,v in data.items():
     def testFunc(self):
         self.assertEqual(getattr(self.location, k), v)
     setattr(TestGeo, "testLocation%s" % k.replace('_', ' ').title().replace(' ', ''), testFunc)

@@ -44,7 +44,7 @@ class FileCache(object):
             raise _FileCacheError('%s exists but is not a directory' % directory)
         temp_fd, temp_path = tempfile.mkstemp()
         temp_fp = os.fdopen(temp_fd, 'w')
-        temp_fp.write(data)
+        temp_fp.write(str(data))
         temp_fp.close()
         if not path.startswith(self._root_directory):
             raise _FileCacheError('%s does not appear to live under %s' %
